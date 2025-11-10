@@ -190,3 +190,9 @@ pytest tests/ -v
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+## Performance Tips
+
+- Use batch_create() for bulk inserts (auto-chunks at Airtable's 10-record limit)
+- Enable caching for read-heavy workflows
+- Use staging_sync with checksums to skip unchanged records

@@ -150,7 +150,9 @@ class TestListRecords:
 
         client.list_records("Leads", filter_formula="{Status}='New'")
         call_kwargs = mock_request.call_args
-        assert "filterByFormula" in call_kwargs.kwargs.get("params", {}) or True
+        params = call_kwargs.kwargs.get("params", {})
+        assert "filterByFormula" in params, f"Expected filterByFormula in params, got: {params}"
+        assert params["filterByFormula"] == "{Status}='New'"
 
 
 class TestGetRecord:

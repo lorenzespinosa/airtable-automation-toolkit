@@ -156,4 +156,4 @@ class TestQueryLogs:
         call_args = logger._mock_client.list_records.call_args
         formula = call_args[1].get("filter_formula", call_args[0][0] if call_args[0] else "")
         # Should use AND() for multiple conditions
-        assert "AND(" in str(formula) or True  # formula passed through
+        assert "AND(" in str(formula), f"Expected AND() formula for multiple filters, got: {formula}"

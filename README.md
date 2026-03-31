@@ -59,7 +59,7 @@ graph LR
 ## Installation
 
 ```bash
-git clone https://github.com/your-org/airtable-automation-toolkit.git
+git clone https://github.com/lorenzespinosa/airtable-automation-toolkit.git
 cd airtable-automation-toolkit
 pip install -r requirements.txt
 cp .env.example .env

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- `pyproject.toml` with project metadata and a `dev` extra — the package is now `pip install -e ".[dev]"` installable
+- GitHub Actions CI running the test suite on Python 3.11 and 3.12
+- Unit tests for `StagingSync` (checksum upsert, conflict detection, full sync cycle) and `batch_ops` — total coverage now 87%
+
+### Fixed
+- README: removed a non-existent "enable caching" performance tip and expanded the API reference to match the actual public methods
+
 ## [0.3.0] - 2025-12-15
 
 ### Added

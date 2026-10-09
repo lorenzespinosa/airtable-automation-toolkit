@@ -1,10 +1,10 @@
 """
-Example: Legal intake staging via Airtable buffer.
+Example: General intake staging via Airtable buffer.
 
-Flow: Lawmatics webhook → Airtable staging → Filevine project creation
+Flow: Source API webhook → Airtable staging → Destination API project creation
 
 This demonstrates the pattern where intake form submissions land in Airtable
-first (visible, queryable, fixable) before being pushed to Filevine.
+first (visible, queryable, fixable) before being pushed to Destination API.
 """
 
 import os
@@ -20,38 +20,38 @@ BASE_ID = os.getenv("AIRTABLE_BASE_ID", "appXXXXXXXXXX")
 API_KEY = os.getenv("AIRTABLE_API_KEY", "patXXXXXXXXXX")
 
 
-def simulate_lawmatics_webhook():
-    """Simulate an incoming lead from Lawmatics."""
+def simulate_source_api_webhook():
+    """Simulate an incoming lead from Source API."""
     return [
         {
-            "external_id": "LM-10042",
-            "name": "Maria Garcia",
-            "email": "maria.garcia@example.com",
+            "external_id": "SRC-10042",
+            "name": "Example Person A",
+            "email": "person-a@example.com",
             "phone": "+14075559876",
-            "case_type": "Personal Injury",
+            "request_type": "Service Request",
             "source": "Google Ads",
             "intake_date": "2025-07-15T10:30:00Z",
-            "notes": "Rear-end collision on I-4. SSN: 123-45-6789",
+            "notes": "Fictional onboarding note; no client details.",
         },
         {
-            "external_id": "LM-10043",
-            "name": "James Wilson",
-            "email": "jwilson@example.com",
+            "external_id": "SRC-10043",
+            "name": "Example Person B",
+            "email": "person-b@example.com",
             "phone": "+14075551234",
-            "case_type": "Criminal Defense",
+            "request_type": "General Inquiry",
             "source": "Referral",
             "intake_date": "2025-07-15T11:00:00Z",
-            "notes": "DUI charge, first offense.",
+            "notes": "Question about onboarding.",
         },
     ]
 
 
-def push_to_filevine(records):
-    """Simulate pushing records to Filevine.
+def push_to_destination_api(records):
+    """Simulate pushing records to Destination API.
 
-    In production, this would call the Filevine API to create projects.
+    In an implementation, replace this stub with a configured destination client.
     """
-    print(f"[Filevine] Would create {len(records)} projects:")
+    print(f"[Destination API] Would create {len(records)} projects:")
     for r in records:
         print(f"  - {r['external_id']}: {r['data'].get('name', 'Unknown')}")
     # Return the records as-is to simulate success
@@ -64,20 +64,20 @@ def main():
     audit = AuditLogger(base_id=BASE_ID, api_key=API_KEY)
 
     # Run the sync
-    print("=== Legal Intake Staging Demo ===\n")
+    print("=== General Intake Staging Demo ===\n")
 
     # Step 1: Stage incoming leads
-    print("1. Staging leads from Lawmatics...")
-    leads = simulate_lawmatics_webhook()
-    staged = sync.push_to_staging(leads, source="lawmatics")
+    print("1. Staging leads from Source API...")
+    leads = simulate_source_api_webhook()
+    staged = sync.push_to_staging(leads, source="source_api")
     print(f"   Staged {len(staged)} records\n")
 
-    # Step 2: Log the intake (PII gets masked automatically)
-    print("2. Writing audit log (PII masked)...")
+    # Step 2: Log example details (selected patterns are masked; verify output)
+    print("2. Writing example audit log...")
     for lead in leads:
         audit.log(
             action="lead_staged",
-            actor="lawmatics-webhook",
+            actor="source_api-webhook",
             details={
                 "external_id": lead["external_id"],
                 "name": lead["name"],
@@ -88,11 +88,11 @@ def main():
         )
     print("   Audit entries written\n")
 
-    # Step 3: Pull pending and push to Filevine
-    print("3. Syncing to Filevine...")
+    # Step 3: Pull pending and push to Destination API
+    print("3. Syncing to Destination API...")
     pending = sync.pull_from_staging(status="pending")
     if pending:
-        push_to_filevine(pending)
+        push_to_destination_api(pending)
         for p in pending:
             sync.mark_synced(p["record_id"])
     print(f"   Synced {len(pending)} records\n")

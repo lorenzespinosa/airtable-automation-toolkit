@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Clarified example masking and sample output; retired unverified client outcomes and neutralized vendor/case-specific examples while retaining legacy filenames.
+
 ### Added
 - `pyproject.toml` with project metadata and a `dev` extra — the package is now `pip install -e ".[dev]"` installable
 - GitHub Actions CI running the test suite on Python 3.11 and 3.12
@@ -23,7 +26,7 @@ All notable changes to this project will be documented in this file.
 - Checksum-based idempotent upserts in staging sync
 
 ### Changed
-- Improved PII masking to handle nested data structures
+- Extended the example masking utility to traverse nested strings and structures
 - Rate limit interval now configurable via constructor
 
 ### Fixed
@@ -34,10 +37,10 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - `DeadLetterQueue` class for failed operation tracking
-- `AuditLogger` with automatic PII masking (emails, phones, SSNs)
+- `AuditLogger` with initial email, phone and dashed-SSN pattern masking (not complete PII removal)
 - `DeadLetterQueue.get_payload()` for JSON payload retrieval
 - `DeadLetterQueue.resolve()` to mark items as resolved
-- Example scripts for legal intake, billing sync, and DLQ usage
+- Example scripts for intake staging, billing sync, and dead-letter review
 - Unit tests with mocked API calls
 
 ### Changed
@@ -52,7 +55,7 @@ All notable changes to this project will be documented in this file.
 - Automatic pagination on `list_records()`
 - Exponential backoff retry (3 attempts) on transient errors
 - Rate limiting (5 req/sec) to stay within Airtable limits
-- PII masking utility (`mask_pii`)
+- Example email, phone and dashed-SSN masking utility (`mask_pii`)
 - Structured exceptions: `AirtableError`, `AirtableRateLimitError`, `AirtableNotFoundError`, `AirtableValidationError`
 - Type hints and docstrings throughout
 - `.env.example` for configuration

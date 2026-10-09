@@ -26,37 +26,37 @@ def main():
 
     dlq.enqueue(
         source="n8n-intake-webhook",
-        error="ConnectionError: Filevine API returned 503 Service Unavailable",
+        error="ConnectionError: Source API returned 503 Service Unavailable",
         payload={
             "lead_id": 12345,
-            "name": "Jane Doe",
+            "name": "Example Person",
             "email": "jane@example.com",
             "phone": "+14075551234",
         },
     )
-    print("   Enqueued: Filevine API timeout")
+    print("   Enqueued: Source API timeout")
 
     dlq.enqueue(
-        source="clio-billing-sync",
-        error="ValidationError: Missing required field 'matter_id'",
+        source="destination_api-billing-sync",
+        error="ValidationError: Missing required field 'project_id'",
         payload={
             "time_entry_id": "TE-9901",
             "hours": 2.5,
-            "description": "Client consultation",
+            "description": "Project consultation",
         },
     )
-    print("   Enqueued: Clio validation error")
+    print("   Enqueued: Destination API validation error")
 
     dlq.enqueue(
-        source="openphone-sms-webhook",
-        error="RateLimitError: OpenPhone API rate limit exceeded (429)",
+        source="message-service-sms-webhook",
+        error="RateLimitError: Message API rate limit exceeded (429)",
         payload={
             "from": "+14075559999",
             "to": "+14075550001",
             "message": "Appointment confirmed for Monday at 2pm",
         },
     )
-    print("   Enqueued: OpenPhone rate limit\n")
+    print("   Enqueued: Message API rate limit\n")
 
     # List pending items
     print("2. Listing pending items...")

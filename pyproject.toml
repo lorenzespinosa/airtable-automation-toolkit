@@ -5,12 +5,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "airtable-automation-toolkit"
 version = "0.3.0"
-description = "Python toolkit for Airtable automation: staging buffer, dead-letter queue, audit logging with PII masking, and bidirectional sync."
+description = "Python toolkit for Airtable automation: staging buffer, dead-letter queue, audit event examples with selected masking patterns, and bidirectional sync."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "Lorenz Espinosa", email = "renzespinosa13@gmail.com" }]
-keywords = ["airtable", "automation", "staging", "dead-letter-queue", "audit-log", "pii-masking", "sync"]
+keywords = ["airtable", "automation", "staging", "dead-letter-queue", "audit-log", "masking-example", "sync"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",

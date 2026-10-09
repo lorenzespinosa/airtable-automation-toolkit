@@ -1,8 +1,9 @@
 """
-Audit logger that writes to Airtable with automatic PII masking.
+Audit logger that writes to Airtable with example masking patterns.
 
-All log entries are masked before writing — emails, phone numbers, and SSNs
-are redacted so the audit table is safe to share with non-technical staff.
+Selected email, contiguous phone and dashed-SSN strings in the Details field
+may be transformed; this is not complete PII removal or a sharing guarantee.
+Review all logged fields, access, and retention before using real data.
 
 Expected Airtable table columns:
     - Action (Single line text)
@@ -27,8 +28,8 @@ logger = logging.getLogger(__name__)
 class AuditLogger:
     """Audit logger backed by an Airtable table.
 
-    PII (emails, phone numbers, SSNs) in the ``details`` field is
-    automatically masked before the record is written.
+    Selected patterns in ``details`` can be masked before writing. Other
+    sensitive values, actor names and action strings require separate review.
 
     Args:
         base_id: Airtable base ID.
@@ -64,7 +65,7 @@ class AuditLogger:
         Args:
             action: What happened (e.g. ``"lead_created"``, ``"record_deleted"``).
             actor: Who or what performed the action (e.g. ``"n8n-workflow-42"``).
-            details: Optional dict of additional context. PII is auto-masked.
+            details: Optional dict of additional context. Example patterns are applied when masking is enabled; review output.
             level: Log level — INFO, WARNING, or ERROR.
 
         Returns:
@@ -115,7 +116,7 @@ class AuditLogger:
     def mask_pii(self, data: Any) -> Any:
         """Mask PII in a data structure.
 
-        Masks emails, phone numbers, and SSNs. Returns a new object —
+        Applies example email, phone and dashed-SSN string patterns. Not a complete sensitive-data filter. Returns a new object —
         does not mutate the original.
 
         Args:

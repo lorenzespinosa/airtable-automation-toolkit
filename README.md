@@ -1,14 +1,14 @@
 # Airtable Automation Toolkit
 
-A Python toolkit for automating Airtable operations — designed for the **buffer/staging layer pattern** used in legal ops and enterprise automation workflows.
+A Python toolkit with examples of Airtable staging, error queues, and syncing records between systems.
 
-Instead of direct system-to-system integrations that break silently, this toolkit uses Airtable as a visible, queryable staging layer between your systems (CRMs, billing, case management, etc.).
+The examples use Airtable as a staging area between connected services. Check the code, access rules and error behavior against your own environment before use.
 
 ## Use Cases
 
-- **Staging layer between CRMs** — Buffer records between Lawmatics, Filevine, Clio, or any API
+- **Staging between systems** — Hold records for review between connected APIs
 - **Dead-letter queue** — Capture failed webhook payloads and API errors for manual review and retry
-- **Audit logging** — Write tamper-evident logs with automatic PII masking
+- **Audit logging** — Record example events for review; decide which fields need masking in your environment
 - **Bidirectional data sync** — Push/pull records between Airtable and external APIs with conflict detection
 
 ## Architecture
@@ -16,8 +16,8 @@ Instead of direct system-to-system integrations that break silently, this toolki
 ```mermaid
 graph LR
     subgraph Sources
-        A[Lawmatics CRM]
-        B[Filevine]
+        A[Source API A]
+        B[Source API B]
         C[Webhooks / n8n]
     end
 
@@ -28,8 +28,8 @@ graph LR
     end
 
     subgraph Destinations
-        G[Clio Billing]
-        H[OpenPhone]
+        G[Destination API A]
+        H[Destination API B]
         I[External APIs]
     end
 
@@ -53,7 +53,7 @@ graph LR
 - Human-readable: ops team can inspect and fix records without code
 - Queryable: filter, sort, group by status — built-in UI
 - Auditable: every record has a created/modified timestamp
-- Cheap: free tier handles most staging workloads
+- Review the current Airtable plan and limits against your expected workload
 - API-first: clean REST API with 5 req/sec rate limit
 
 ## Installation
@@ -109,8 +109,8 @@ dlq = DeadLetterQueue(base_id="appXXX", api_key="patXXX", table_name="DLQ")
 # Enqueue a failed operation
 dlq.enqueue(
     source="n8n-intake-webhook",
-    error="ConnectionError: Filevine API timeout",
-    payload={"lead_id": 12345, "name": "John Smith"}
+    error="ConnectionError: Source API timeout",
+    payload={"lead_id": 12345, "name": "Example Person"}
 )
 
 # List pending items for review
@@ -127,13 +127,13 @@ from src.audit_logger import AuditLogger
 
 logger = AuditLogger(base_id="appXXX", api_key="patXXX")
 
-# PII is automatically masked in logs
+# Example masking covers selected email, phone and dashed SSN patterns; review all logged fields
 logger.log(
     action="lead_created",
     actor="n8n-intake-workflow",
     details={"email": "jane@example.com", "phone": "+14075551234", "ssn": "123-45-6789"}
 )
-# Stored as: {"email": "j***@example.com", "phone": "+1407***1234", "ssn": "***-**-6789"}
+# Stored as: {"email": "j***@example.com", "phone": "+140***1234", "ssn": "***-**-6789"}
 ```
 
 ### Staging Sync
@@ -145,8 +145,8 @@ sync = StagingSync(base_id="appXXX", api_key="patXXX", table_name="Staging")
 
 # Push records to staging
 sync.push_to_staging([
-    {"external_id": "LM-001", "name": "Case Alpha", "status": "open"},
-    {"external_id": "LM-002", "name": "Case Beta", "status": "closed"},
+    {"external_id": "SRC-001", "name": "Record Alpha", "status": "open"},
+    {"external_id": "SRC-002", "name": "Record Beta", "status": "closed"},
 ])
 
 # Pull records matching a filter
@@ -223,10 +223,8 @@ MIT License - see [LICENSE](LICENSE) for details.
 ---
 
 <!-- hire-cta -->
-## 👋 Built by Lorenz Espinosa
+## About Lorenz
 
-I design and ship production automation for ops-heavy businesses — webhook-driven, AI-powered systems with validation, retries, and audit logging baked in. **50+ processes automated · $800K+ saved.**
+I'm Lorenz Espinosa, an IT systems and automation consultant. This repository is public example material, not a record of client systems or results.
 
-**Want something like this built for your team?**
-
-[![See more work](https://img.shields.io/badge/See%20more%20work-0d1117?style=flat-square&logo=github&logoColor=7aa2f7)](https://github.com/lorenzespinosa) &nbsp;[![Start a project](https://img.shields.io/badge/Start%20a%20project%20%E2%86%92-0d1117?style=for-the-badge&logo=gmail&logoColor=9ece6a)](mailto:renzespinosa13@gmail.com?subject=Automation%20project%20inquiry&body=Hi%20Lorenz%2C%0A%0AGoal%3A%0ASystems%2Ftools%20involved%3A%0ATimeline%3A%0A) &nbsp;[![Connect on LinkedIn](https://img.shields.io/badge/Connect-0d1117?style=flat-square&logo=linkedin&logoColor=7aa2f7)](https://www.linkedin.com/in/lorenz-leslie-espinosa/)
+For a general inquiry, please leave out client names, records and confidential details: [Email](mailto:renzespinosa13@gmail.com) · [Portfolio](https://lorenzespinosa.github.io/) · [LinkedIn](https://www.linkedin.com/in/lorenz-leslie-espinosa/).

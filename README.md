@@ -1,4 +1,4 @@
-# Airtable Automation Toolkit
+# airtable-automation-toolkit
 
 A Python toolkit with examples of Airtable staging, error queues, and syncing records between systems.
 
